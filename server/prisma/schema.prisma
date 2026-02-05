@@ -1,0 +1,183 @@
+// Generador del cliente de Prisma
+// Esto genera el cliente TypeScript para interactuar con la base de datos
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Configuración de la fuente de datos
+// Conecta con SQL Server usando la URL definida en el archivo .env
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// NOTA: SQL Server no soporta ENUMS nativos
+// Se usan String con validaciones en la aplicación
+// ============================================================================
+
+// ============================================================================
+// MODELO: Usuario
+// Tabla principal de usuarios del sistema
+// Roles posibles: "EMPLEADO", "EMPLEADOR", "ADMIN"
+// ============================================================================
+model Usuario {
+  id                Int      @id @default(autoincrement())
+  email             String   @unique @db.VarChar(255)
+  contrasena        String   @db.VarChar(255)
+  rol               String   @db.VarChar(20) // "EMPLEADO" | "EMPLEADOR" | "ADMIN"
+  fechaCreacion     DateTime @default(now()) @db.DateTime
+  fechaActualizacion DateTime @updatedAt @db.DateTime
+
+  // Relaciones
+  perfilEmpleado    PerfilEmpleado?
+  perfilEmpleador   PerfilEmpleador?
+  trabajosPublicados Trabajo[]
+  postulaciones     Postulacion[]
+
+  @@map("usuarios")
+}
+
+// ============================================================================
+// MODELO: Perfil de Empleado
+// Información detallada de los usuarios que buscan trabajo
+// ============================================================================
+model PerfilEmpleado {
+  id         Int     @id @default(autoincrement())
+  usuarioId  Int     @unique
+  nombre     String  @db.VarChar(100)
+  apellido   String  @db.VarChar(100)
+  domicilio  String? @db.VarChar(255)
+  telefono   String? @db.VarChar(50)
+  sobreMi    String? @db.Text
+  experiencia String? @db.Text
+  educacion  String? @db.Text
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("perfiles_empleados")
+}
+
+// ============================================================================
+// MODELO: Perfil de Empleador
+// Información de las empresas o empleadores que publican trabajos
+// ============================================================================
+model PerfilEmpleador {
+  id                  Int     @id @default(autoincrement())
+  usuarioId           Int     @unique
+  nombreEmpresa       String  @db.VarChar(200)
+  descripcionEmpresa  String? @db.Text
+  emailContacto       String? @db.VarChar(255)
+  telefonoContacto    String? @db.VarChar(50)
+  sitioWeb            String? @db.VarChar(255)
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("perfiles_empleadores")
+}
+
+// ============================================================================
+// MODELO: Departamento
+// Departamentos de la provincia de San Juan, Argentina
+// ============================================================================
+model Departamento {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique @db.VarChar(100)
+  slug        String  @unique @db.VarChar(100)
+  codigo      String? @db.VarChar(10) // Código postal o identificador oficial
+  
+  trabajos    Trabajo[]
+  
+  @@map("departamentos")
+}
+
+// ============================================================================
+// MODELO: Categoría
+// Categorías de trabajos (Gastronomía, Comercio, etc.)
+// ============================================================================
+model Categoria {
+  id          Int     @id @default(autoincrement())
+  nombre      String  @unique @db.VarChar(100)
+  slug        String  @unique @db.VarChar(100)
+  descripcion String? @db.Text
+
+  trabajos Trabajo[]
+
+  @@map("categorias")
+}
+
+// ============================================================================
+// MODELO: Tipo de Trabajo
+// Tipos de empleo (Tiempo Completo, Medio Tiempo, etc.)
+// ============================================================================
+model TipoTrabajo {
+  id     Int    @id @default(autoincrement())
+  nombre String @unique @db.VarChar(100)
+  slug   String @unique @db.VarChar(100)
+
+  trabajos Trabajo[]
+
+  @@map("tipos_trabajo")
+}
+
+// ============================================================================
+// MODELO: Trabajo
+// Ofertas de trabajo publicadas por empleadores
+// Estados posibles: "ACTIVO", "CERRADO", "BORRADOR"
+// ============================================================================
+model Trabajo {
+  id              Int      @id @default(autoincrement())
+  empleadorId     Int
+  categoriaId     Int
+  tipoTrabajoId   Int
+  departamentoId  Int      // Nueva relación
+  titulo          String   @db.VarChar(255)
+  descripcion     String   @db.Text
+  ubicacion       String?  @db.VarChar(200) // Ahora opcional, ej: "Calle X, Barrio Y"
+  latitud    Float?
+  longitud   Float?
+  paga            Decimal? @db.Decimal(10, 2)
+  requisitos      String?  @db.Text
+  beneficios      String?  @db.Text
+  googleMapsUrl   String? @db.VarChar(500) // URL de Google Maps para ubicación exacta
+  estado          String   @default("ACTIVO") @db.VarChar(20)
+  fechaCreacion   DateTime @default(now()) @db.DateTime
+  fechaActualizacion DateTime @updatedAt @db.DateTime
+
+  empleador       Usuario       @relation(fields: [empleadorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  categoria       Categoria     @relation(fields: [categoriaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tipoTrabajo     TipoTrabajo   @relation(fields: [tipoTrabajoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  departamento    Departamento  @relation(fields: [departamentoId], references: [id], onDelete: NoAction, onUpdate: NoAction) 
+  postulaciones   Postulacion[]
+
+  @@index([empleadorId])
+  @@index([categoriaId])
+  @@index([tipoTrabajoId])
+  @@index([departamentoId]) // Nuevo índice
+  @@index([estado])
+  @@index([fechaCreacion])
+  @@map("trabajos")
+}
+
+// ============================================================================
+// MODELO: Postulación
+// Postulaciones de empleados a ofertas de trabajo
+// Estados posibles: "PENDIENTE", "REVISADA", "ACEPTADA", "RECHAZADA"
+// ============================================================================
+model Postulacion {
+  id              Int      @id @default(autoincrement())
+  trabajoId       Int
+  empleadoId      Int
+  estado          String   @default("PENDIENTE") @db.VarChar(20) // "PENDIENTE" | "REVISADA" | "ACEPTADA" | "RECHAZADA"
+  cartaPresentacion String? @db.Text
+  fechaPostulacion DateTime @default(now()) @db.DateTime
+  fechaRevision   DateTime? @db.DateTime
+
+  trabajo  Trabajo @relation(fields: [trabajoId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  empleado Usuario @relation(fields: [empleadoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([trabajoId, empleadoId])
+  @@index([empleadoId])
+  @@index([estado])
+  @@map("postulaciones")
+}

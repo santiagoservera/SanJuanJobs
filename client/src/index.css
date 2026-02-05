@@ -1,0 +1,235 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700;900&display=swap");
+
+@import "tailwindcss";
+
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  /* San Juan inspired palette - warm earth, wine, and sun */
+  --color-background: oklch(96.5% 0.008 85);
+  --color-foreground: oklch(28% 0.015 45);
+
+  --color-card: oklch(98% 0.005 85);
+  --color-card-foreground: oklch(28% 0.015 45);
+
+  --color-popover: oklch(98% 0.005 85);
+  --color-popover-foreground: oklch(28% 0.015 45);
+
+  /* Terracotta - main brand color */
+  --color-primary: oklch(58% 0.18 40);
+  --color-primary-foreground: oklch(98% 0.005 85);
+
+  /* Warm sand */
+  --color-secondary: oklch(91% 0.02 75);
+  --color-secondary-foreground: oklch(32% 0.015 45);
+
+  /* Muted warm gray */
+  --color-muted: oklch(93% 0.01 75);
+  --color-muted-foreground: oklch(55% 0.01 50);
+
+  /* Wine red accent */
+  --color-accent: oklch(48% 0.16 25);
+  --color-accent-foreground: oklch(98% 0.005 85);
+
+  --color-destructive: oklch(62% 0.24 30);
+  --color-destructive-foreground: oklch(98% 0.005 85);
+
+  --color-border: oklch(89% 0.012 75);
+  --color-input: oklch(89% 0.012 75);
+  --color-ring: oklch(58% 0.18 40);
+
+  /* Custom colors */
+  --color-gold: oklch(75% 0.16 90);
+  --color-gold-foreground: oklch(28% 0.015 45);
+  --color-wine: oklch(45% 0.16 25);
+  --color-wine-foreground: oklch(98% 0.005 85);
+  --color-mountain: oklch(48% 0.02 250);
+  --color-sand: oklch(88% 0.03 75);
+
+  /* Sidebar colors */
+  --color-sidebar-background: oklch(97% 0.006 85);
+  --color-sidebar-foreground: oklch(32% 0.015 45);
+  --color-sidebar-primary: oklch(58% 0.18 40);
+  --color-sidebar-primary-foreground: oklch(98% 0.005 85);
+  --color-sidebar-accent: oklch(93% 0.02 75);
+  --color-sidebar-accent-foreground: oklch(32% 0.015 45);
+  --color-sidebar-border: oklch(89% 0.012 75);
+  --color-sidebar-ring: oklch(58% 0.18 40);
+
+  /* Border radius */
+  --radius-sm: 0.5rem;
+  --radius: 0.75rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  /* Shadows */
+  --shadow-soft: 0 4px 20px -4px oklch(28% 0.015 45 / 0.08);
+  --shadow-medium: 0 8px 30px -6px oklch(28% 0.015 45 / 0.12);
+  --shadow-glow: 0 0 40px oklch(58% 0.18 40 / 0.15);
+
+  /* Font families - CAMBIA AQUÍ TUS TIPOGRAFÍAS */
+  --font-display: "Merriweather", serif;
+  --font-sans: "Inter", sans-serif;
+
+  /* Animations */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-fade-up: fadeUp 0.6s ease-out forwards;
+  --animate-fade-in: fadeIn 0.5s ease-out forwards;
+  --animate-slide-in: slideIn 0.4s ease-out forwards;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-sans {
+    font-family: var(--font-sans);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      135deg,
+      oklch(58% 0.18 40) 0%,
+      oklch(48% 0.16 25) 50%,
+      oklch(75% 0.16 90) 100%
+    );
+  }
+
+  .bg-gradient-hero {
+    background: linear-gradient(
+      135deg,
+      oklch(28% 0.015 45) 0%,
+      oklch(38% 0.12 40) 100%
+    );
+  }
+
+  .bg-gradient-warm {
+    background: linear-gradient(
+      180deg,
+      oklch(96.5% 0.008 85) 0%,
+      oklch(94% 0.01 75) 100%
+    );
+  }
+
+  .bg-gradient-card {
+    background: linear-gradient(
+      180deg,
+      oklch(98% 0.005 85) 0%,
+      oklch(96% 0.008 75) 100%
+    );
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-medium {
+    box-shadow: var(--shadow-medium);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .animate-float {
+    animation: var(--animate-float);
+  }
+
+  .animate-fade-up {
+    animation: var(--animate-fade-up);
+  }
+
+  .animate-fade-in {
+    animation: var(--animate-fade-in);
+  }
+
+  .animate-slide-in {
+    animation: var(--animate-slide-in);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(from var(--color-primary) l c h / 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(from var(--color-primary) l c h / 0.5);
+}
