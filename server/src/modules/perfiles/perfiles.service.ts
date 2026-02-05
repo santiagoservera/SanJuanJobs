@@ -61,7 +61,7 @@ export class PerfilesService {
    */
   async actualizarPerfilEmpleado(
     usuarioId: number,
-    datos: ActualizarPerfilEmpleadoDTO
+    datos: ActualizarPerfilEmpleadoDTO,
   ) {
     // Verificar que el usuario sea empleado y tenga perfil
     const usuario = await prisma.usuario.findUnique({
@@ -76,7 +76,7 @@ export class PerfilesService {
     if (usuario.rol !== "EMPLEADO") {
       throw new ApiError(
         403,
-        "Solo los empleados pueden actualizar este perfil"
+        "Solo los empleados pueden actualizar este perfil",
       );
     }
 
@@ -98,7 +98,7 @@ export class PerfilesService {
    */
   async actualizarPerfilEmpleador(
     usuarioId: number,
-    datos: ActualizarPerfilEmpleadorDTO
+    datos: ActualizarPerfilEmpleadorDTO,
   ) {
     // Verificar que el usuario sea empleador y tenga perfil
     const usuario = await prisma.usuario.findUnique({
@@ -113,7 +113,7 @@ export class PerfilesService {
     if (usuario.rol !== "EMPLEADOR") {
       throw new ApiError(
         403,
-        "Solo los empleadores pueden actualizar este perfil"
+        "Solo los empleadores pueden actualizar este perfil",
       );
     }
 
@@ -150,7 +150,7 @@ export class PerfilesService {
     // Verificar contraseña actual
     const contrasenaValida = await bcrypt.compare(
       datos.contrasenaActual,
-      usuario.contrasena
+      usuario.contrasena,
     );
 
     if (!contrasenaValida) {
@@ -160,20 +160,20 @@ export class PerfilesService {
     // Validar que la nueva contraseña sea diferente
     const mismaContrasena = await bcrypt.compare(
       datos.contrasenaNueva,
-      usuario.contrasena
+      usuario.contrasena,
     );
 
     if (mismaContrasena) {
       throw new ApiError(
         400,
-        "La nueva contraseña debe ser diferente a la actual"
+        "La nueva contraseña debe ser diferente a la actual",
       );
     }
 
     // Hashear nueva contraseña
     const nuevaContrasenaHasheada = await bcrypt.hash(
       datos.contrasenaNueva,
-      10
+      10,
     );
 
     // Actualizar contraseña
@@ -276,7 +276,7 @@ export class PerfilesService {
    * Obtener perfil público de un empleador
    */
   async obtenerPerfilEmpleadorPublico(
-    empleadorId: number
+    empleadorId: number,
   ): Promise<PerfilEmpleadorPublicoResponse> {
     // Obtener empleador con perfil
     const empleador = await prisma.usuario.findUnique({
@@ -348,7 +348,10 @@ export class PerfilesService {
         telefonoContacto: empleador.perfilEmpleador.telefonoContacto,
         sitioWeb: empleador.perfilEmpleador.sitioWeb,
       },
-      trabajos: trabajos,
+      trabajos: trabajos.map((t) => ({
+        ...t,
+        ubicacion: t.ubicacion ?? "",
+      })),
       estadisticas: {
         totalTrabajos,
         trabajosActivos,
