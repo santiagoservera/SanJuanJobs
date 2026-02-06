@@ -7,7 +7,6 @@ import Index from "./modules/landing/pages/LandingPage";
 import Empleos from "./modules/trabajos/pages/EmpleosPage";
 import EmpleoDetalle from "./modules/trabajos/pages/EmpleoDetallePage";
 
-import Perfil from "./pages/Perfil";
 import Login from "./modules/auth/pages/LoginPage";
 import Registro from "./modules/auth/pages/RegistroPage";
 import NotFound from "./pages/NotFound";
