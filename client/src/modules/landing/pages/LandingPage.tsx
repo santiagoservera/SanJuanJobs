@@ -283,7 +283,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
-              ¿Por qué TrabajoLocal?
+              ¿Por qué SanJuanJobs?
             </h2>
             <p className="text-primary-foreground/70 max-w-2xl mx-auto">
               Nacimos de la necesidad de ordenar la búsqueda de empleo en San
@@ -294,14 +294,14 @@ const Index = () => {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center p-6">
               <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-primary" />
+                <Users className="w-8 h-8 text-primary" />
               </div>
               <h3 className="font-display text-xl font-semibold mb-2">
-                100% Verificado
+                Basta de grupos de Facebook
               </h3>
               <p className="text-primary-foreground/70">
-                Todas las empresas son verificadas. Sin estafas, sin avisos
-                falsos.
+                La búsqueda laboral en San Juan está dispersa en grupos que no
+                fueron pensados para eso. Acá, el empleo tiene su propio lugar.
               </p>
             </div>
 
@@ -310,23 +310,24 @@ const Index = () => {
                 <Grape className="w-8 h-8 text-gold" />
               </div>
               <h3 className="font-display text-xl font-semibold mb-2">
-                Enfoque Local
+                El portal de empleo de San Juan
               </h3>
               <p className="text-primary-foreground/70">
-                Solo empleos en San Juan. Conocemos nuestra provincia y su
-                mercado laboral.
+                No había una plataforma pensada exclusivamente para el mercado
+                laboral sanjuanino. SanJuanJobs nace para cubrir esa necesidad.
               </p>
             </div>
 
             <div className="text-center p-6">
               <div className="w-16 h-16 rounded-2xl bg-wine/20 flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-wine" />
+                <Shield className="w-8 h-8 text-wine" />
               </div>
               <h3 className="font-display text-xl font-semibold mb-2">
-                Conexión Directa
+                Orden, claridad y confianza
               </h3>
               <p className="text-primary-foreground/70">
-                Chateá directamente con las empresas. Sin intermediarios.
+                Ofertas reales, empresas visibles y procesos claros. Sin avisos
+                perdidos, sin mensajes privados dudosos.
               </p>
             </div>
           </div>
